@@ -14,6 +14,8 @@ import java.util.List;
 @RestController
 public class FilmController {
 
+    private long id = 1;
+
     private static final Logger log = LoggerFactory.getLogger(FilmController.class);
 
     private List<Film> films = new ArrayList<>();
@@ -21,11 +23,11 @@ public class FilmController {
     @PostMapping(value = "/films")
     public Film create(@RequestBody Film film)  throws ValidationException {
         log.info("Фильм создан");
-        if (film.getName().isEmpty()) {
+        if (film.getName() == null || film.getName().isEmpty()) {
             log.error("Не внесено название фильма!");
             throw new ValidationException("Название не может быть пустым!");
         }
-        if (film.getDescription().length() > 200) {
+        if (film.getDescription() == null || film.getDescription().length() > 200) {
             log.error("Длина описания фильма больше 200 символов!");
             throw new ValidationException("Максимальная длина описания — 200 символов!");
         }
@@ -39,19 +41,21 @@ public class FilmController {
             log.error("Продолжительность фильма не может быть отрицательным числом!");
             throw new ValidationException("Продолжительность фильма должна быть положительной!");
         }
+        film.setId(id);
         films.add(film);
+        id++;
         return film;
 
     } // создание фильма
 
     @PutMapping("/films")
     public Film putFilm (@RequestBody Film film) throws ValidationException {
-        log.info("Фильм обнавлен");
-        if (film.getName().isEmpty()) {
+        log.info("Фильм обновлен");
+        if (film.getName() == null || film.getName().isEmpty()) {
             log.error("Не внесено название фильма!");
             throw new ValidationException("Название не может быть пустым!");
         }
-        if (film.getDescription().length() > 200) {
+        if (film.getDescription() == null || film.getDescription().length() > 200) {
             log.error("Длина описания фильма больше 200 символов!");
             throw new ValidationException("Максимальная длина описания — 200 символов!");
         }
@@ -64,6 +68,9 @@ public class FilmController {
         if (film.getDuration() < 0) {
             log.error("Продолжительность фильма не может быть отрицательным числом!");
             throw new ValidationException("Продолжительность фильма должна быть положительной!");
+        }
+        if (film.getId() < 1) {
+            throw new RuntimeException();
         }
         for (Film i : films) {
             if (i.getId() == film.getId()) {
@@ -72,7 +79,7 @@ public class FilmController {
                 break;
             }
         } return film;
-    } // изменеие фильма
+    } // изменение фильма
 
     @GetMapping("/films")
     public List<Film> findAllFilms() {
