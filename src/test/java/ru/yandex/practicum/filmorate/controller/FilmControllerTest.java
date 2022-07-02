@@ -119,17 +119,19 @@ class FilmControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isBadRequest());
     }
 
+
     @Test
-    @DisplayName("Обновление данных фильма (код 200)")
+    @DisplayName("Обновляем фильм, возвращается код 200")
     void updateFilmTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put("/films")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\n" +
-                                "  \"id\": 0,\n" +
+                                "  \"id\": 1,\n" +
                                 "  \"name\": \"name\",\n" +
                                 "  \"releaseDate\": \"1985-04-01\",\n" +
                                 "  \"description\": \"new description\",\n" +
-                                "  \"duration\": 120\n" +
+                                "  \"duration\": 120,\n" +
+                                "  \"rate\": 10\n" +
                                 "}"))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
     }
