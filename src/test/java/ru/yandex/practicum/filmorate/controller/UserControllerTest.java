@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
-
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+@TestMethodOrder(MethodOrderer.DisplayName.class)
 @WebMvcTest(controllers = UserController.class)
 class UserControllerTest {
 
@@ -17,7 +19,7 @@ class UserControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    @DisplayName("Создание пользователя (код 200)")
+    @DisplayName("01.Создание пользователя (код 200)")
     void createUserTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -31,7 +33,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Создание пользователя с пустыми полями (код 400)")
+    @DisplayName("02.Создание пользователя с пустыми полями (код 400)")
     void createEmptyUserTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -40,7 +42,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Создание пользователя с пробелом в логине (код 400)")
+    @DisplayName("03.Создание пользователя с пробелом в логине (код 400)")
     void createUserFailLoginTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -54,7 +56,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Создание пользователя с пустым логином (код 400)")
+    @DisplayName("04.Создание пользователя с пустым логином (код 400)")
     void createUserEmptyLoginTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -68,7 +70,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Создание пользователя с пустым именем (код 200)")
+    @DisplayName("05.Создание пользователя с пустым именем (код 200)")
     void createUserEmptyNameTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +84,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Создание пользователя с пустым Email, (код 400)")
+    @DisplayName("06.Создание пользователя с пустым Email, (код 400)")
     void createUserFailEmailTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -96,7 +98,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Создание пользователя с датой рождения позже текущей (код 400)")
+    @DisplayName("07.Создание пользователя с датой рождения позже текущей (код 400)")
     void createUserDateAfterNowTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -110,7 +112,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Создание пользователя ДР = now()(код 400)")
+    @DisplayName("08.Создание пользователя ДР = now()(код 400)")
     void createUserDateNowTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -124,7 +126,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Обновление данных пользователя (код 200)")
+    @DisplayName("09.Обновление данных пользователя (код 200)")
     void updateUserTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -139,7 +141,7 @@ class UserControllerTest {
     }
 
     @Test
-    @DisplayName("Обновление данных пользователя c несуществующем id (код 200)")
+    @DisplayName("10.Обновление данных пользователя c несуществующем id (код 500)")
     void updateUserNotIdTest() throws Exception {
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -150,11 +152,11 @@ class UserControllerTest {
                                 "  \"email\": \"email@email.ru\",\n" +
                                 "  \"birthday\": \"1985-04-01\"\n" +
                                 "}"))
-                .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
+                .andExpect(MockMvcResultMatchers.status().isInternalServerError());
     }
 
     @Test
-    @DisplayName("Вывод списка всех пользователей (код 200)")
+    @DisplayName("11.Вывод списка всех пользователей (код 200)")
     void addTest() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/users").accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
