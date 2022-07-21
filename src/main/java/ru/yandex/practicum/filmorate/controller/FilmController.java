@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,12 +34,11 @@ public class FilmController {
         return service.add(film);
     }
 
+    @SneakyThrows
     @PutMapping("/films")
-    public Film put (@Valid @RequestBody Film film) throws NotFoundException{
+    public Film put (@Valid @RequestBody Film film) {
        log.info("Получен запрос на изменение данных фильма");
-        if (service.update(film) != null) {
             return service.update(film);
-        } else throw new NotFoundException ("Ошибка");
     }
 
     @DeleteMapping ("/films")
@@ -47,13 +47,11 @@ public class FilmController {
         service.delete(film);
     }
 
-
+    @SneakyThrows
     @GetMapping("/films/{id}")
-    public Film find(@PathVariable long id)  throws NotFoundException {
+    public Film find(@PathVariable long id){
         log.info("Получен запрос на вывод данных одного фильма");
-        if (service.isExist(id)) {
             return service.find(id);
-        } else throw new NotFoundException ("Ошибка");
     }
 
     @GetMapping ("/films")
@@ -61,22 +59,18 @@ public class FilmController {
        log.info("Получен запрос на вывод данных всех фильмов");
         return service.findAll();
     }
-
+    @SneakyThrows
     @PutMapping("/films/{id}/like/{userId}")
-    public Film addLike (@PathVariable("id") long id, @PathVariable("userId") long userId)
-            throws NotFoundException{
+    public Film addLike (@PathVariable("id") long id, @PathVariable("userId") long userId){
         log.info("Получен запрос на добавление лайка");
-        if (service.isExist(id)) {
             return service.addLike(id, userId);
-        } else throw new NotFoundException ("Ошибка");
     }
 
+    @SneakyThrows
     @DeleteMapping ("/films/{id}/like/{userId}")
-    public Film removeLike (@PathVariable("id") long id, @PathVariable("userId") long userId) throws NotFoundException{
+    public Film removeLike (@PathVariable("id") long id, @PathVariable("userId") long userId) {
         log.info("Получен запрос на удаление лайка");
-        if (service.isExist(id) && service.containsUserLike(id, userId)) {
             return service.removeLike(id, userId);
-        }else throw new NotFoundException ("Ошибка");
     }
 
     @GetMapping ("/films/popular")
