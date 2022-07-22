@@ -4,19 +4,14 @@ import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.Service.FilmService;
 import ru.yandex.practicum.filmorate.Service.UserService;
-import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 
 @RequestMapping
 @RestController
@@ -54,11 +49,9 @@ public class UserController {
 
     @SneakyThrows
     @GetMapping("/users/{id}")
-    public User find (@PathVariable long id)  throws NotFoundException{
+    public User find (@PathVariable long id) {
         log.info("Получен запрос на вывод данных одного пользователя");
-        if (service.isExist(id)) {
             return service.find(id);
-        } else throw new NotFoundException ("Ошибка, при получении запроса на вывод данных одного пользователя");
     }
 
     @GetMapping ("/users")
@@ -68,12 +61,9 @@ public class UserController {
     }
     @SneakyThrows
     @PutMapping("/users/{id}/friends/{friendId}")
-    public User addFriend (@PathVariable("id") long id, @PathVariable("friendId") long friendId)
-            throws NotFoundException{
-        log.info("Получен запрос на добавление в список друзей");
-        if (service.isExist(id) && service.isExist(friendId)) {
+    public User addFriend (@PathVariable("id") long id, @PathVariable("friendId") long friendId) {
+        log.info("Получен запрос на добавление друзей");
             return service.addFriend(id, friendId);
-        } else throw new NotFoundException ("Ошибка, при получении запроса на добавление в список друзей");
     }
 
     @DeleteMapping ("/users/{id}/friends/{friendId}")
