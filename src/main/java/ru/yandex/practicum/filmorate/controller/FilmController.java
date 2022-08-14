@@ -9,6 +9,8 @@ import ru.yandex.practicum.filmorate.Service.FilmService;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MPA;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -75,6 +77,30 @@ public class FilmController {
     public List<Film> getLikesAmount (@RequestParam(defaultValue = "10") int count){
         log.info("Получен запрос на вывод фильмов, по количеству лайков");
         return service.getLikesAmount(count);
+    }
+    @GetMapping ("/genres")
+    public List<Genre> getGenres(){
+        log.info("Получен запрос на вывод всех жанров");
+        return service.getGenres();
+    }
+    @SneakyThrows
+    @GetMapping ("/genres/{id}")
+    Genre getGenresById(@PathVariable("id") long id){
+        log.info("Получен запрос на вывод всех жанра по id");
+        return service.getGenresById(id);
+    }
+
+    @GetMapping ("/mpa")
+    List<MPA> getMPA (){
+        log.info("Получен запрос на вывод всех рейтингов");
+        return service.getMPA();
+    }
+
+    @SneakyThrows
+    @GetMapping ("/mpa/{id}")
+    MPA getMPAById(@PathVariable("id") long id){
+        log.info("Получен запрос на вывод всех рейтингов по di");
+        return service.getMPAById(id);
     }
 
 }

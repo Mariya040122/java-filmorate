@@ -6,7 +6,9 @@ import ru.yandex.practicum.filmorate.Validator.LumiereDate;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -15,8 +17,6 @@ import java.util.Set;
 public class Film {
 
     long id = 0;
-
-    final private Set<Long> likes = new HashSet<>();
 
     @NotBlank (message = "Название не может быть пустым!")
     String name;
@@ -31,6 +31,11 @@ public class Film {
 
     @Min(value = 1, message = "Продолжительность фильма должна быть положительной!")
     long duration;
+
+    MPA mpa;
+
+    List<Genre> genres = new ArrayList<>();
+    Set<Long> likes = new HashSet<>();
 
     public void addLike (long id){
         likes.add(id);

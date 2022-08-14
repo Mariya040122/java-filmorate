@@ -1,22 +1,27 @@
 package ru.yandex.practicum.filmorate.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.Storage.FilmStorage;
 import ru.yandex.practicum.filmorate.controller.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MPA;
 
 import java.util.List;
 
 
 @Service
+
 public class FilmService  {
 
     private long id = 1;
+    @Autowired
+    @Qualifier("FilmDatabase")
     private final FilmStorage storage;
 
-    @Autowired
-    public FilmService(FilmStorage storage){
+    public FilmService(@Qualifier("FilmDatabase") FilmStorage storage){
         this.storage = storage;
     }
 
@@ -69,4 +74,27 @@ public class FilmService  {
     public boolean isExist(long id){
         return storage.isExist(id);
     }
+
+    public List<Genre> getGenres(){
+        return storage.getGenres();
+    }
+
+    public Genre getGenresById(long id) throws NotFoundException{
+        Genre genre = storage.getGenresById(id);
+        if (genre != null){
+            return genre;
+        } else throw new NotFoundException("Ошибка, данный жанр не найден!");
+    }
+
+    public List<MPA> getMPA (){
+        return storage.getMPA();
+    }
+
+    public MPA getMPAById(long id) throws NotFoundException{
+        MPA mpa = storage.getMPAById(id);
+        if (mpa != null) {
+            return mpa;
+        } else throw new NotFoundException("Ошибка, данный рейтинг не найден!");
+    }
+
 }

@@ -1,12 +1,16 @@
 package ru.yandex.practicum.filmorate.Storage;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MPA;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@Qualifier("FilmMemory")
 public class InMemoryFilmStorage implements FilmStorage{
 
     private List<Film> films = new ArrayList<>();
@@ -103,5 +107,25 @@ public class InMemoryFilmStorage implements FilmStorage{
         if (likes != null){
             return likes.contains(userId);
         } else return false;
+    }
+
+    @Override
+    public List<Genre> getGenres(){
+        return null;
+    }
+
+    @Override
+    public Genre getGenresById(long id){
+        return null;
+    }
+
+    @Override
+    public List<MPA> getMPA (){
+        return null;
+    }
+
+    @Override
+    public MPA getMPAById(long id){
+        return null;
     }
 }

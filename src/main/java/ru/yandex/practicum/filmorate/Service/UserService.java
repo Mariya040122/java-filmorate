@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.Storage.UserStorage;
 import ru.yandex.practicum.filmorate.controller.NotFoundException;
@@ -12,10 +13,12 @@ import java.util.List;
 public class UserService  {
 
     private long id = 1;
+    @Autowired
+    @Qualifier("UserDatabase")
     private final UserStorage storage;
 
-    @Autowired
-    public UserService(UserStorage storage){
+
+    public UserService(@Qualifier("UserDatabase") UserStorage storage){
         this.storage = storage;
     }
 
@@ -36,8 +39,9 @@ public class UserService  {
     }
 
     public User find(long id) throws NotFoundException {
-        if (storage.isExist(id)) {
-            return storage.find(id);
+        User user = storage.find(id);
+        if (user != null) {
+            return user;
         } else throw new NotFoundException ("Ошибка, при получении запроса на вывод данных одного пользователя");
     }
 
