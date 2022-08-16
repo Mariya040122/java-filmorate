@@ -22,11 +22,11 @@ public class FilmController {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
     private final FilmService service;
-
     @Autowired
     public FilmController (FilmService service) {
         this.service = service;
     }
+
 
     @PostMapping(value = "/films")
     public Film create(@Valid @RequestBody Film film) {
@@ -78,29 +78,4 @@ public class FilmController {
         log.info("Получен запрос на вывод фильмов, по количеству лайков");
         return service.getLikesAmount(count);
     }
-    @GetMapping ("/genres")
-    public List<Genre> getGenres(){
-        log.info("Получен запрос на вывод всех жанров");
-        return service.getGenres();
-    }
-    @SneakyThrows
-    @GetMapping ("/genres/{id}")
-    Genre getGenresById(@PathVariable("id") long id){
-        log.info("Получен запрос на вывод всех жанра по id");
-        return service.getGenresById(id);
-    }
-
-    @GetMapping ("/mpa")
-    List<MPA> getMPA (){
-        log.info("Получен запрос на вывод всех рейтингов");
-        return service.getMPA();
-    }
-
-    @SneakyThrows
-    @GetMapping ("/mpa/{id}")
-    MPA getMPAById(@PathVariable("id") long id){
-        log.info("Получен запрос на вывод всех рейтингов по di");
-        return service.getMPAById(id);
-    }
-
 }

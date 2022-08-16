@@ -261,57 +261,6 @@ public class FilmDbStorage implements FilmStorage {
         return new HashSet<>(likes);
     }
 
-    @Override
-    public List<Genre> getGenres(){
-        String sqlGenres = "select g.id as id, g.name as name from genre as g ";
-        List<Genre> genres = jdbcTemplate.query(sqlGenres, (rs, rowNum) ->
-                new Genre(rs.getLong("id"), rs.getString("name")));
-        return genres;
-    }
-
-    @Override
-    public Genre getGenresById(long id){
-        String sqlCount = "select count(id) " +
-                "from GENRE " +
-                "where id = ?";
-        Integer count = jdbcTemplate.queryForObject(sqlCount, new Object[]{id}, Integer.class);
-        if (count == 1) {
-            String sqlGenres = "select id, name from genre " +
-                    "where id = ?";
-            Genre genre = jdbcTemplate.queryForObject(sqlGenres, new Object[]{id}, (rs, rowNum) ->
-                    new Genre(
-                            id,
-                            rs.getString("name")
-                    ));
-            return genre;
-        } else return null;
-    }
-
-    @Override
-    public List<MPA> getMPA (){
-        String sqlMPA = "select g.id as id, g.name as name from ratings as g ";
-        List<MPA> ratings = jdbcTemplate.query(sqlMPA, (rs, rowNum) ->
-                new MPA(rs.getLong("id"), rs.getString("name")));
-        return ratings;
-    }
-
-    @Override
-    public MPA getMPAById(long id){
-        String sqlCount = "select count(id) " +
-                "from RATINGS " +
-                "where id = ?";
-        Integer count = jdbcTemplate.queryForObject(sqlCount, new Object[]{id}, Integer.class);
-        if (count == 1) {
-            String sqlMPA = "select id, name from ratings " +
-                    "where id = ?";
-            MPA mpa = jdbcTemplate.queryForObject(sqlMPA, new Object[]{id}, (rs, rowNum) ->
-                    new MPA(
-                            id,
-                            rs.getString("name")
-                    ));
-            return mpa;
-        } else return null;
-    }
 }
 
 

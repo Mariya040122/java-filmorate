@@ -27,14 +27,4 @@ public interface FilmStorage {
     boolean isExist(long id);
 
     boolean containsUserLike(long id, long userId);
-
-    List<Genre> getGenres();
-
-    Genre getGenresById(long id);
-
-    List<MPA> getMPA ();
-
-    MPA getMPAById(long id);
-
-
 }
