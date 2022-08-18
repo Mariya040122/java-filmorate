@@ -12,9 +12,8 @@ import ru.yandex.practicum.filmorate.model.MPA;
 import java.sql.PreparedStatement;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
+
 
 @Component
 @Qualifier("FilmDatabase")
@@ -41,20 +40,6 @@ public class FilmDbStorage implements FilmStorage {
         }, keyHolder);
         Long newId = keyHolder.getKey().longValue();
 
-        if (film.getGenres() != null) {
-            Set<Long> ids = new HashSet<>();
-            for (Genre genre : film.getGenres()) {
-                if (!ids.contains(genre.getId())) {
-                    String sqlGenre = "insert into genrefilm (film_id, genre_id) " +
-                            "values (?, ?)";
-                    jdbcTemplate.update(sqlGenre,
-                            newId,
-                            genre.getId());
-                    ids.add(genre.getId());
-                }
-            }
-        }
-
         if (film.getLikes() != null) {
             for (Long like : film.getLikes()) {
                 String sqlLike = "insert into likes (film_id, user_id) " +
@@ -64,7 +49,8 @@ public class FilmDbStorage implements FilmStorage {
                         like);
             }
         }
-        return find(newId);
+        film.setId(newId);
+        return film;
     }
 
     @Override
@@ -97,6 +83,7 @@ public class FilmDbStorage implements FilmStorage {
                         ids.add(genre.getId());
                     }
                 }
+            }
 
                 String sqlDeleteLike = "delete from likes where film_id = ?";
                 jdbcTemplate.update(sqlDeleteLike
@@ -111,17 +98,13 @@ public class FilmDbStorage implements FilmStorage {
                                 like);
                     }
                 }
-            }
-            return find(film.getId());
+
+            return film;
         } else return null;
     }
 
     @Override
     public void delete(Film film) {
-
-        String sqlDeleteGenre = "delete from genrefilm where film_id = ?";
-        jdbcTemplate.update(sqlDeleteGenre
-                , film.getId());
 
 
         String sqlDeleteLike = "delete from likes where film_id = ?";
@@ -154,7 +137,7 @@ public class FilmDbStorage implements FilmStorage {
                         rs.getDate("releaseDate").toLocalDate(),
                         rs.getLong("duration"),
                         new MPA(rs.getLong("MPAid"), rs.getString("MPAname")),
-                        getGenresUtil(id),
+                        null,
                         getLikes(id)
                 ));
 
@@ -180,7 +163,7 @@ public class FilmDbStorage implements FilmStorage {
                         rs.getDate("releaseDate").toLocalDate(),
                         rs.getLong("duration"),
                         new MPA(rs.getLong("MPAid"), rs.getString("MPAname")),
-                        getGenresUtil(rs.getLong("id")),
+                        null,
                         getLikes(rs.getLong("id"))
                 ));
         return films;

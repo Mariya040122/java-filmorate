@@ -5,7 +5,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Genre;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @Qualifier("GenreDatabase")
@@ -42,4 +44,48 @@ public class GenreDbStorage implements GenreStorage {
             return genre;
         } else return null;
     }
+
+    @Override
+    public List<Genre> getFilmGenreByFilmId(long filmId) {
+        String sqlGenre = "select gf.genre_id as id, g.name as name from genrefilm as gf " +
+                "inner join genre as g on g.id=gf.genre_id " +
+                "where gf.film_id=?";
+        List<Genre> genres = jdbcTemplate.query(sqlGenre, (rs, rowNum) ->
+                new Genre(rs.getLong("id"), rs.getString("name")), filmId);
+        return genres;
+    }
+
+    @Override
+    public List<Genre> getAllFilmsGenre() {
+        String sqlGenre = "select gf.genre_id as id, g.name as name from genrefilm as gf " +
+                "inner join genre as g on g.id=gf.genre_id ";
+        List<Genre> genres = jdbcTemplate.query(sqlGenre, (rs, rowNum) ->
+                new Genre(rs.getLong("id"), rs.getString("name")));
+        return genres;
+    }
+    @Override
+    public List<Genre> addFilmGenres(long filmId, List<Genre> genres){
+        Set<Long> ids = new HashSet<>();
+        for (Genre genre : genres) {
+            if (!ids.contains(genre.getId())) {
+                String sqlGenre = "insert into genrefilm (film_id, genre_id) " +
+                        "values (?, ?)";
+                jdbcTemplate.update(sqlGenre,
+                        filmId,
+                        genre.getId());
+                ids.add(genre.getId());
+            }
+        }
+        return getFilmGenreByFilmId(filmId);
+
+    }
+    @Override
+    public void deleteFilmGenres(long filmId){
+        String sqlDeleteGenre = "delete from genrefilm where film_id = ?";
+        jdbcTemplate.update(sqlDeleteGenre
+                , filmId);
+
+    }
+
+
 }
