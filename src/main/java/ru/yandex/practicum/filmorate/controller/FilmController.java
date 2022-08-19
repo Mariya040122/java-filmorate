@@ -1,39 +1,79 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import ru.yandex.practicum.filmorate.Service.FilmService;
+
 import ru.yandex.practicum.filmorate.model.Film;
 
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
+
 
 @RequestMapping
 @RestController
-public class FilmController  extends Controller<Film>{
-    long id = 1;
+public class FilmController {
 
-    @Override
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final FilmService service;
+    @Autowired
+    public FilmController (FilmService service) {
+        this.service = service;
+    }
+
+
     @PostMapping(value = "/films")
-    public Film create(@Valid @RequestBody Film film)  throws ValidationException {
-        log.info("Фильм создан");
-        film.setId(id);
-        id++;
-        return super.create(film);
+    public Film create(@Valid @RequestBody Film film) {
+        log.info("Получен запрос на добавление фильма");
+        return service.add(film);
     }
 
-    @Override
+    @SneakyThrows
     @PutMapping("/films")
-    public Film put (@Valid @RequestBody Film film) throws ValidationException {
-        log.info("Данные фильма обновлены");
-        return super.put(film);
+    public Film put (@Valid @RequestBody Film film) {
+       log.info("Получен запрос на изменение данных фильма");
+            return service.update(film);
     }
 
-    @Override
-    @GetMapping("/films")
-    public List<Film> findAll()  {
-        log.info("Выведен список всех фильмов");
-        return super.findAll();
+    @DeleteMapping ("/films")
+    public void delete (@Valid @RequestBody Film film){
+        log.info("Получен запрос на удаление фильма");
+        service.delete(film);
+    }
+
+    @SneakyThrows
+    @GetMapping("/films/{id}")
+    public Film find(@PathVariable long id){
+        log.info("Получен запрос на вывод данных одного фильма");
+            return service.find(id);
+    }
+
+    @GetMapping ("/films")
+    public List<Film> findAll () {
+       log.info("Получен запрос на вывод данных всех фильмов");
+        return service.findAll();
+    }
+    @SneakyThrows
+    @PutMapping("/films/{id}/like/{userId}")
+    public Film addLike (@PathVariable("id") long id, @PathVariable("userId") long userId){
+        log.info("Получен запрос на добавление лайка");
+            return service.addLike(id, userId);
+    }
+
+    @SneakyThrows
+    @DeleteMapping ("/films/{id}/like/{userId}")
+    public Film removeLike (@PathVariable("id") long id, @PathVariable("userId") long userId) {
+        log.info("Получен запрос на удаление лайка");
+            return service.removeLike(id, userId);
+    }
+
+    @GetMapping ("/films/popular")
+    public List<Film> getLikesAmount (@RequestParam(defaultValue = "10") int count){
+        log.info("Получен запрос на вывод фильмов, по количеству лайков");
+        return service.getLikesAmount(count);
     }
 }
